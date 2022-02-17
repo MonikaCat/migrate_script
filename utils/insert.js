@@ -54,7 +54,7 @@ async function Transactions(txRows) {
     // Prepare messages of relative transaction_hash
     forMessages.push([messages, hash, height, partitionId])
   }
-  
+  stmt += "ON CONFLICT DO NOTHING"
   // Insert transaction
   await query(stmt, params)
   await insertMessagesArray(forMessages)
@@ -103,6 +103,7 @@ async function insertMessagesArray(MessagesArray) {
     }
   }
   stmt = stmt.slice(0, -1) // remove trailing
+  stmt += "ON CONFLICT DO NOTHING"
   await query(stmt, params)
 }
 
