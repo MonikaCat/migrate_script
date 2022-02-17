@@ -1,7 +1,7 @@
 const {query} = require("./psql")
 
 async function selectFromOldTxTable(limit, offset) {
-  const result = await query(`SELECT * FROM transaction_old ORDER BY height LIMIT ${limit} OFFSET ${offset}`)
+  const result = await query(`SELECT * FROM transaction ORDER BY height LIMIT ${limit} OFFSET ${offset}`)
   return result.rows
 }
   

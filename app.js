@@ -8,13 +8,13 @@ const {query} = require("./utils/psql")
 
 async function migrate() {
 
-  await Alter.oldTxTable()
-  await Alter.oldMsgTable()
+  // await Alter.oldTxTable()
+  // await Alter.oldMsgTable()
 
   await Create.NewTxTable()
   await Create.NewMsgTable()
 
-  const {rows} = await query("SELECT COUNT(*) FROM transaction_old")
+  const {rows} = await query("SELECT COUNT(*) FROM transaction")
   const totolRowCount = rows[0].count
  
   console.log(`Number of rows: ${totolRowCount}`);
@@ -25,7 +25,7 @@ async function migrate() {
 
   // Handle in batch
   while(stop != true) {
-    // Select rows from original transaction_old table
+    // Select rows from original transaction table
     const txRows = await utils.selectFromOldTxTable(settings.LIMIT, offset)
 
     console.log(`\nhandling from height ${txRows[0]["height"]} to ${txRows[txRows.length-1]["height"]}`)
