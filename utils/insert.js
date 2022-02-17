@@ -7,7 +7,7 @@ const existMsgPartition = {}
 
 async function Transactions(txRows) {
   // Prepare stmt
-  let stmt = `INSERT INTO transaction 
+  let stmt = `INSERT INTO transaction_new 
     (hash, height, success, messages, memo, signatures, signer_infos, fee, gas_wanted, gas_used, raw_log, logs, partition_id) 
     VALUES `
   const cols = 13
@@ -34,10 +34,10 @@ async function Transactions(txRows) {
     } = row
 
     let partitionId = Math.floor(height/settings.PARTITION_SIZE)
-    let partitionTable = `transaction_${partitionId}`
+    let partitionTable = `transaction_new_${partitionId}`
     if (existTxPartition[partitionTable] != true){
       console.log("create partition table: ", partitionTable);
-      await query(`CREATE TABLE IF NOT EXISTS ${partitionTable} PARTITION OF transaction FOR VALUES IN (${partitionId})`)
+      await query(`CREATE TABLE IF NOT EXISTS ${partitionTable} PARTITION OF transaction_new FOR VALUES IN (${partitionId})`)
 
       existTxPartition[partitionTable] = true
     }
@@ -63,7 +63,7 @@ async function Transactions(txRows) {
 async function insertMessagesArray(MessagesArray) {
 
   // Prepare stmt
-  let stmt = `INSERT INTO message 
+  let stmt = `INSERT INTO message_new 
     (transaction_hash, index, type, value, involved_accounts_addresses, partition_id, height) 
     VALUES `
   const cols = 7
@@ -74,10 +74,10 @@ async function insertMessagesArray(MessagesArray) {
     let [ messages, hash, height, partitionId ] = MessagesArray[i]
 
     // Create msg partition tables
-    let partitionTable = `message_${partitionId}`
+    let partitionTable = `message_new_${partitionId}`
     if (existMsgPartition[partitionTable] != true) {
       console.log("create partition table: ", partitionTable);
-      await query(`CREATE TABLE IF NOT EXISTS ${partitionTable} PARTITION OF message FOR VALUES IN (${partitionId})`)
+      await query(`CREATE TABLE IF NOT EXISTS ${partitionTable} PARTITION OF message_new FOR VALUES IN (${partitionId})`)
       existMsgPartition[partitionTable] = true
     }
 
